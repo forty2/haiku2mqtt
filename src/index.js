@@ -31,7 +31,7 @@ Logger.useDefaults({
 })
 
 const Log = Logger.get('haiku2mqtt');
-Log.setLevel(Logger.DEBUG);
+Log.setLevel(Logger.ERROR);
 
 SenseME
     .on('founddevice', setupNewDevice)
@@ -75,6 +75,10 @@ function setupNewDevice(device) {
         }))
         ::publishMessages();
 
+    // force a refresh in case we didn't subscribe early enough to get the
+    // automatic one.
+    device.refreshAll();
+
     getMessages(client, getTopic(device, 'set/#'), getTopic(device, 'get/#'))
         .map(({ topic, message }) => {
             let match = topic.match(/([sg]et)\/(.*)$/);
@@ -86,14 +90,20 @@ function setupNewDevice(device) {
                     , device);
 
                 if (typeof obj !== 'undefined') {
-                    if (command === 'set') {
-                        Log.debug(`Setting ${device.name},${path} from ${obj.value} to ${message}`);
-                        obj.value = message;
-                    }
-                    else if (command === 'get') {
-                        // request an update.  The new value will eventually
-                        // be published on the status channel.
-                        obj.refresh();
+                    // if a value can't be set, don't bother trying.
+                    // Likewise, there's no sense refreshing a value that
+                    // can't change.
+                    let desc = Object.getOwnPropertyDescriptor(obj, 'value');
+                    if (desc.set) {
+                        if (command === 'set') {
+                                Log.debug(`Setting ${device.name},${path} from ${obj.value} to ${message}`);
+                                obj.value = message;
+                        }
+                        else if (command === 'get') {
+                            // request an update.  The new value will eventually
+                            // be published on the status channel.
+                            obj.refresh();
+                        }
                     }
                 }
             }

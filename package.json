@@ -1,0 +1,46 @@
+{
+  "name": "haiku2mqtt",
+  "version": "1.0.0",
+  "description": "Control your Haiku SenseME devices with MQTT.",
+  "bin": {
+    "haiku2mqtt": "dist/index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel src -d dist -D",
+    "clean": "rm -rf dist/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/forty2/haiku2mqtt.git"
+  },
+  "author": "Zach Bean <zb@forty2.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/forty2/haiku2mqtt/issues"
+  },
+  "homepage": "https://github.com/forty2/haiku2mqtt#readme",
+  "dependencies": {
+    "any-observable": "^0.2.0",
+    "haiku-senseme": "^1.0.0",
+    "mqtt": "^1.14.1",
+    "rxjs": "^5.0.0-beta.11",
+    "yargs": "^5.0.0"
+  },
+  "devDependencies": {
+    "babel-plugin-syntax-function-bind": "^6.13.0",
+    "babel-plugin-transform-function-bind": "^6.8.0",
+    "babel-plugin-transform-object-rest-spread": "^6.8.0",
+    "babel-preset-es2015": "^6.14.0"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ],
+    "plugins": [
+      "syntax-function-bind",
+      "transform-function-bind",
+      "transform-object-rest-spread"
+    ]
+  }
+}

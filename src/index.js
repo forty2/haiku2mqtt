@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import 'any-observable/register/rxjs-all';
 
 import Logger from 'js-logger';

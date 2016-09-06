@@ -8,7 +8,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel src -d dist -D",
-    "clean": "rm -rf dist/"
+    "clean": "rm -rf dist/",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",

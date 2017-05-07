@@ -23,9 +23,10 @@
   "homepage": "https://github.com/forty2/haiku2mqtt#readme",
   "dependencies": {
     "any-observable": "^0.2.0",
-    "haiku-senseme": "^1.0.0",
+    "haiku-senseme": "^1.1.0",
     "mqtt": "^1.14.1",
     "rxjs": "^5.0.0-beta.11",
+    "yalm": "^4.0.2",
     "yargs": "^5.0.0"
   },
   "devDependencies": {

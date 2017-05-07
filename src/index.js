@@ -2,7 +2,7 @@
 
 import 'any-observable/register/rxjs-all';
 
-import Logger from 'js-logger';
+import log from 'yalm';
 import MQTT from 'mqtt';
 
 import { SenseME } from 'haiku-senseme';
@@ -10,30 +10,7 @@ import { Observable, Subject } from 'rxjs';
 
 import config from './config.js';
 
-Logger.useDefaults({
-    defaultLevel: Logger.ERROR,
-    formatter: function (messages, context) {
-        const date   = new Date(),
-              year   = date.getFullYear(),
-              month  = ("0"+(date.getMonth() + 1)).substr(-2),
-              day    = ("0"+date.getDate()).substr(-2),
-              hour   = ("0"+date.getHours()).substr(-2),
-              minute = ("0"+date.getMinutes()).substr(-2),
-              second = ("0"+date.getSeconds()).substr(-2),
-              millis = ("000"+date.getMilliseconds()).substr(-3),
-              level  = ("     "+context.level.name).substr(-5);
-
-        messages.unshift(
-            `[${year}/${month}/${day}]` +
-            `[${hour}:${minute}:${second}.${millis}]` +
-            `[${context.name || '(base)'}]` +
-            `[${level}]`
-        )
-    }
-})
-
-const Log = Logger.get('haiku2mqtt');
-Log.setLevel(Logger.ERROR);
+log.setLevel(config.verbosity);
 
 SenseME
     .on('founddevice', setupNewDevice)
@@ -50,7 +27,7 @@ function getTopic(dev, suffix) {
 }
 
 function setupNewDevice(device) {
-    Log.debug(`Creating client for ${device.name}`);
+    log.debug(`Creating client for ${device.name}`);
     let client;
     if (!clients[device.id]) {
         clients[device.id] = client = MQTT.connect(config.broker, {
@@ -82,7 +59,8 @@ function setupNewDevice(device) {
     device.refreshAll();
 
     getMessages(client, getTopic(device, 'set/#'), getTopic(device, 'get/#'))
-        .map(({ topic, message }) => {
+        .catch((_, caught) => caught)
+        .subscribe(({ topic, message }) => {
             let match = topic.match(/([sg]et)\/(.*)$/);
             if (match) {
                 let path = match[2].split('/'), command = match[1];
@@ -98,7 +76,7 @@ function setupNewDevice(device) {
                     let desc = Object.getOwnPropertyDescriptor(obj, 'value');
                     if (desc.set) {
                         if (command === 'set') {
-                                Log.debug(`Setting ${device.name},${path} from ${obj.value} to ${message}`);
+                                log.debug(`Setting ${device.name},${path} from ${obj.value} to ${message}`);
                                 obj.value = message;
                         }
                         else if (command === 'get') {
@@ -110,8 +88,6 @@ function setupNewDevice(device) {
                 }
             }
         })
-        .onErrorResumeNext()
-        .subscribe();
 }
 
 function forgetDevice(device) {

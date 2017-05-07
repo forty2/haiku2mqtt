@@ -57,6 +57,10 @@ npm run clean
 ```
 
 ## Release History
+* 1.1.0
+    * Small bugfix for error handling
+    * Update `haiku-senseme`
+    * Switch to `yalm` for logging
 
 * 1.0.0
     * The first release.
@@ -68,4 +72,4 @@ Zach Bean – zb@forty2.com
 Distributed under the MIT license. See [LICENSE](LICENSE.md) for more detail.
 
 [npm-image]: https://img.shields.io/npm/v/haiku2mqtt.svg?style=flat
-[npm-url]: https://npmjs.org/package/haik2mqtt
+[npm-url]: https://npmjs.org/package/haiku2mqtt
